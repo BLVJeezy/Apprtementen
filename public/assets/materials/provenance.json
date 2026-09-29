@@ -1,0 +1,22 @@
+{
+  "id": "source-brick",
+  "url": "/assets/materials/source-brick.webp",
+  "source": "reference/FW_ Laatste versie plannen/BA_BUCKINX_G_N_LINKER ZIJGEVEL.pdf",
+  "sourceSha256": "a79c724d2a4e5a2fbc6f35cc2a4c64ec19d982fe44fe607fad1fba7a6a0240bd",
+  "page": 1,
+  "clipPdfPoints": [
+    520,
+    710,
+    780,
+    795
+  ],
+  "width": 512,
+  "height": 168,
+  "method": "Direct raster crop from unbroken ground-floor brick wall on left elevation; no recoloring, retouching, synthesis or geometry modification.",
+  "limitation": "Architectural drawing material swatch, not a calibrated photograph or guaranteed construction finish. Repetition is approximate; original crop edges are preserved.",
+  "suggestedRepeatMetres": {
+    "width": 4.59,
+    "height": 1.5
+  },
+  "repeatScaleBasis": "PDF elevation marked 1:50; 260 by 85 PDF points at that scale."
+}

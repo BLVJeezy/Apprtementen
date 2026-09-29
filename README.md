@@ -36,4 +36,9 @@ Original ZIP and extracted `reference/` are read-only and not uploaded to Git. S
 Only web derivatives are in public assets. The reference title blocks are cropped away. Furnishings are source-plan symbols, not sales inclusions. Apartment crops retain contextual common/neighboring areas and do not assert legal boundaries. Plan-stated net areas appear to include terraces; certified interior areas must be confirmed. No private garden/parking assignment is inferred.
 
 ## Replaceable model pipeline
-See `ASSETS.md`. Accurate interactive 2D drawings are delivered; no photorealistic 3D or walkthrough is claimed.
+See `ASSETS.md`. Interactive source drawings and a simplified walkable 3D model are delivered; photorealism and complete facade reconstruction are not claimed.
+
+## Interactive 3D tour
+The hero and Enter the apartment tour use source-extracted Three.js geometry. Drag to look; focus the scene and use WASD/arrows to walk, or drag the analog joystick with mouse/touch. Release the joystick to stop. Choose any apartment or level, switch to exterior/overview, zoom, and use Volledig scherm for fullscreen where supported. Source plans remain authoritative; decorative staging and landscape are illustrative, facade details remain simplified. See HANDOFF.md for continuation by Claude.
+
+For mobile preview on the same Wi-Fi, run `npm run dev -- --host 0.0.0.0 --port 5174` and open the network URL Vite prints. The Mac must stay running.

@@ -18,11 +18,16 @@
     },
     {
       "id": "verification",
-      "status": "in_progress"
+      "status": "completed"
     },
     {
       "id": "handoff",
-      "status": "in_progress"
+      "status": "completed"
+    },
+    {
+      "id": "photoreal-facade-details",
+      "status": "pending",
+      "notes": "Verified glazing, frames and railings; see HANDOFF.md. Agent usage limit interrupted extraction."
     }
   ]
 }

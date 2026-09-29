@@ -1,4 +1,9 @@
-# State
-Application built and running on http://127.0.0.1:5173. All ten apartment records, individual plan crops, three levels, four elevations, source-based site plan, responsive styling and enquiry draft export implemented. TypeScript and production builds pass. Browser installation/acceptance and visual checks in progress; do not declare verified yet.
+# Current state — 29 September 2026
+Website and interactive 3D tour implemented locally. Analog joystick added for mouse/touch; WASD and arrow keys supported. Fullscreen toggle added. Source brick texture and parquet improve material appearance. Original plans remain authoritative. See HANDOFF.md for exact limitations and next steps.
 
-Next action: `npm test`; inspect desktop, tablet and mobile screenshots, repair failures. Then finalize handoff and commit/push to configured empty origin. No website deployment authorized.
+Local preview: http://127.0.0.1:5173/
+Mobile on same Wi-Fi: http://192.168.0.234:5174/ (Mac must remain awake; address may change).
+Remote configured: https://github.com/BLVJeezy/Apprtementen.git
+No production deployment performed.
+
+Verification: npm run build passed; all 15 Playwright tests passed, including joystick movement/release, keyboard walking, fullscreen, all ten units, mobile accessibility and WebGL fallback. Three.js lazy chunk emits a size warning (~593 KB / 152 KB gzip).

@@ -9,3 +9,6 @@
 - Source schedule net areas appear to include terraces. Display the source figures with an explicit qualification and request confirmation of certified internal areas.
 - Source title blocks include personal contacts; raw extracted text and contact sheets remain local and ignored. Only cropped public derivatives, source hashes, evidence and verified schedule enter source control.
 - All fonts are self-hosted. No analytics, browser storage or background personal-data transmission.
+
+## Interactive tour and realism
+Use source PDF vector polygons for architecture rather than invented layouts. Three.js is lazy loaded with WebGL failure fallback. Add real-time first-person walking, collision checks, source unit spawns, levels, exterior view, fullscreen and a normalized analog joystick. Desktop keeps WASD/arrows. Materials/staging are illustrative; brick texture is a documented crop of the architect's elevation. Accurate glazing remains explicitly unfinished. HANDOFF.md records the partial facade investigation for Claude.
