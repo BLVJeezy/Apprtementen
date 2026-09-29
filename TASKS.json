@@ -1,1 +1,28 @@
-{"tasks":[{"id":"sources","status":"in_progress"},{"id":"schedule","status":"in_progress"},{"id":"assets","status":"in_progress"},{"id":"application","status":"pending"},{"id":"verification","status":"pending"},{"id":"handoff","status":"pending"}]}
+{
+  "tasks": [
+    {
+      "id": "sources",
+      "status": "completed"
+    },
+    {
+      "id": "schedule",
+      "status": "completed"
+    },
+    {
+      "id": "assets",
+      "status": "completed"
+    },
+    {
+      "id": "application",
+      "status": "completed"
+    },
+    {
+      "id": "verification",
+      "status": "in_progress"
+    },
+    {
+      "id": "handoff",
+      "status": "in_progress"
+    }
+  ]
+}

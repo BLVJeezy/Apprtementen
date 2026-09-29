@@ -4,3 +4,8 @@
 - PDF drawings provide authoritative fallback geometry because no installed DWG reader was detected. Keep final model assets replaceable; do not fabricate unverified 3D.
 - Dutch customer-facing copy follows the supplied Flemish architectural package. Solyn is provisional branding.
 - No invented sales contact. Enquiry can be prepared and downloaded locally; configurable mailto when client supplies recipient. Explicitly indicate delivery status.
+- Client supplied https://github.com/BLVJeezy/Apprtementen.git. `git ls-remote` showed an empty repository; origin now points to it. No existing remote work was overwritten.
+- All ten unit crops are directly rendered, individually inspected PDF views; irregular unit crops retain context and explicitly do not assert ownership polygons.
+- Source schedule net areas appear to include terraces. Display the source figures with an explicit qualification and request confirmation of certified internal areas.
+- Source title blocks include personal contacts; raw extracted text and contact sheets remain local and ignored. Only cropped public derivatives, source hashes, evidence and verified schedule enter source control.
+- All fonts are self-hosted. No analytics, browser storage or background personal-data transmission.

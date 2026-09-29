@@ -1,0 +1,373 @@
+[
+  {
+    "id": 0,
+    "file": "reference/FW_ Laatste versie plannen/BA_BUCKINX_G_N_ACHTERGEVEL TUINBERGING.pdf",
+    "bytes": 97592,
+    "sha256": "d6b14e5f055c362c3b94089ff66df58fc5cf3087a5dd1e262d0d29373dcf420a",
+    "pages": 1,
+    "page_sizes_points": [
+      [
+        842.0,
+        595.0
+      ]
+    ]
+  },
+  {
+    "id": 1,
+    "file": "reference/FW_ Laatste versie plannen/BA_BUCKINX_G_N_ACHTERGEVEL.pdf",
+    "bytes": 626898,
+    "sha256": "8c67db935fe2b67fe3308a17adfb75d3b20233f9190adbcf0b519dc538f45452",
+    "pages": 1,
+    "page_sizes_points": [
+      [
+        2384.0,
+        1684.0
+      ]
+    ]
+  },
+  {
+    "id": 2,
+    "file": "reference/FW_ Laatste versie plannen/BA_BUCKINX_G_N_LINKER ZIJGEVEL TUINBERGING.pdf",
+    "bytes": 96335,
+    "sha256": "5b18d9a068cc7ac5e32deb8a456ddd50697554ccf620b0fdae732683694afff2",
+    "pages": 1,
+    "page_sizes_points": [
+      [
+        842.0,
+        595.0
+      ]
+    ]
+  },
+  {
+    "id": 3,
+    "file": "reference/FW_ Laatste versie plannen/BA_BUCKINX_G_N_LINKER ZIJGEVEL.pdf",
+    "bytes": 1639011,
+    "sha256": "a79c724d2a4e5a2fbc6f35cc2a4c64ec19d982fe44fe607fad1fba7a6a0240bd",
+    "pages": 1,
+    "page_sizes_points": [
+      [
+        1684.0,
+        1191.0
+      ]
+    ]
+  },
+  {
+    "id": 4,
+    "file": "reference/FW_ Laatste versie plannen/BA_BUCKINX_G_N_RECHTER ZIJGEVEL TUINBERGING.pdf",
+    "bytes": 97573,
+    "sha256": "9e361df0d8b0a3238f0aa21733a24e05210dced7a1436cd91f2c35d061fa0eb1",
+    "pages": 1,
+    "page_sizes_points": [
+      [
+        842.0,
+        595.0
+      ]
+    ]
+  },
+  {
+    "id": 5,
+    "file": "reference/FW_ Laatste versie plannen/BA_BUCKINX_G_N_RECHTER ZIJGEVEL.pdf",
+    "bytes": 933530,
+    "sha256": "4a41a33b6aab720cafbc1e34cf24b011612d346b4d1b0619554c6a6a1383be8b",
+    "pages": 1,
+    "page_sizes_points": [
+      [
+        1684.0,
+        1191.0
+      ]
+    ]
+  },
+  {
+    "id": 6,
+    "file": "reference/FW_ Laatste versie plannen/BA_BUCKINX_G_N_VOORGEVEL  TUINBERGING.pdf",
+    "bytes": 97652,
+    "sha256": "837351b76b081605ec8310e3186ca8d48fcf082ee5c6fb340943cbd4ddff1f1f",
+    "pages": 1,
+    "page_sizes_points": [
+      [
+        842.0,
+        595.0
+      ]
+    ]
+  },
+  {
+    "id": 7,
+    "file": "reference/FW_ Laatste versie plannen/BA_BUCKINX_G_N_VOORGEVEL.pdf",
+    "bytes": 717332,
+    "sha256": "0d299a672e4aa23c3b7e8f3741eb1704fa5b270cb91cca9b0b43975c4bafb8d0",
+    "pages": 1,
+    "page_sizes_points": [
+      [
+        2384.0,
+        1684.0
+      ]
+    ]
+  },
+  {
+    "id": 8,
+    "file": "reference/FW_ Laatste versie plannen/BA_BUCKINX_I_N_INPLANTING.pdf",
+    "bytes": 254684,
+    "sha256": "c8d05b8687c16d391c66855cb7758e19a53982d2bd82ebd9e0eaf1192bac2a4d",
+    "pages": 1,
+    "page_sizes_points": [
+      [
+        1684.0,
+        1191.0
+      ]
+    ]
+  },
+  {
+    "id": 9,
+    "file": "reference/FW_ Laatste versie plannen/BA_BUCKINX_L_N_LEGENDE.pdf",
+    "bytes": 43512,
+    "sha256": "48c20572d2578a35b0489255db91e6ec0e82f82779d9092949a5870d094bf85c",
+    "pages": 1,
+    "page_sizes_points": [
+      [
+        842.0,
+        1191.0
+      ]
+    ]
+  },
+  {
+    "id": 10,
+    "file": "reference/FW_ Laatste versie plannen/BA_BUCKINX_P_N_NIVEAU  1 .pdf",
+    "bytes": 262543,
+    "sha256": "c619d4b158ed103bf32b503e52696162e27137cfa7f3ed995b7861b1b1d981b4",
+    "pages": 1,
+    "page_sizes_points": [
+      [
+        2384.0,
+        1684.0
+      ]
+    ]
+  },
+  {
+    "id": 11,
+    "file": "reference/FW_ Laatste versie plannen/BA_BUCKINX_P_N_NIVEAU  2 .pdf",
+    "bytes": 177081,
+    "sha256": "c41d3a9171a731b324496f129fdc39ee4bbbc2956584b3c882855bde287107d8",
+    "pages": 1,
+    "page_sizes_points": [
+      [
+        2384.0,
+        1684.0
+      ]
+    ]
+  },
+  {
+    "id": 12,
+    "file": "reference/FW_ Laatste versie plannen/BA_BUCKINX_P_N_NIVEAU -1 .pdf",
+    "bytes": 371948,
+    "sha256": "0e4dc45554a31afcabfcaedf5fabbf7a91c697f71d010fb8eb877250b8917e5c",
+    "pages": 1,
+    "page_sizes_points": [
+      [
+        2384.0,
+        1684.0
+      ]
+    ]
+  },
+  {
+    "id": 13,
+    "file": "reference/FW_ Laatste versie plannen/BA_BUCKINX_P_N_NIVEAU 0  .pdf",
+    "bytes": 293200,
+    "sha256": "13006542c4168b098d9d1b503ebe6a9408d0f5907e5766a0c998855c5543fcc0",
+    "pages": 1,
+    "page_sizes_points": [
+      [
+        2384.0,
+        1684.0
+      ]
+    ]
+  },
+  {
+    "id": 14,
+    "file": "reference/FW_ Laatste versie plannen/BA_BUCKINX_P_N_NIVEAU 0  TUINBERGING.pdf",
+    "bytes": 45414,
+    "sha256": "60de838116b32c5cb096539ca0a3eb41b5a4c5249238eb91059526b556fefcf0",
+    "pages": 1,
+    "page_sizes_points": [
+      [
+        842.0,
+        595.0
+      ]
+    ]
+  },
+  {
+    "id": 15,
+    "file": "reference/FW_ Laatste versie plannen/BA_BUCKINX_S_N_SNEDE AA.pdf",
+    "bytes": 290533,
+    "sha256": "59f3f7575fca56444f29a3e15065f833b031ff8388840896a0d7069acd7ca8c4",
+    "pages": 1,
+    "page_sizes_points": [
+      [
+        3370.0,
+        2384.0
+      ]
+    ]
+  },
+  {
+    "id": 16,
+    "file": "reference/FW_ Laatste versie plannen/BA_BUCKINX_S_N_SNEDE BB.pdf",
+    "bytes": 1274854,
+    "sha256": "fca5b91013fd454953ed3693b841ff6557d995981a5a7fd4349e6d26e15a05a8",
+    "pages": 1,
+    "page_sizes_points": [
+      [
+        3370.0,
+        2384.0
+      ]
+    ]
+  },
+  {
+    "id": 17,
+    "file": "reference/FW_ Laatste versie plannen/BA_BUCKINX_S_N_SNEDE CC  TUINBERGING.pdf",
+    "bytes": 107292,
+    "sha256": "57774c22af8aef415885e8486f3450aa4b302f91003e0d9c2f646d3719fd337e",
+    "pages": 1,
+    "page_sizes_points": [
+      [
+        842.0,
+        595.0
+      ]
+    ]
+  },
+  {
+    "id": 18,
+    "file": "reference/FW_ Laatste versie plannen/BA_BUCKINX_S_N_SNEDE DETAILSNEDE WADI.pdf",
+    "bytes": 88910,
+    "sha256": "3595454b35d38f7d430b1e7aab469949903da10440db07b8503192de605018f4",
+    "pages": 1,
+    "page_sizes_points": [
+      [
+        842.0,
+        595.0
+      ]
+    ]
+  },
+  {
+    "id": 19,
+    "file": "reference/FW_ Laatste versie plannen/BA_BUCKINX_T_N_TERREINPROFIEL 1 .pdf",
+    "bytes": 169990,
+    "sha256": "81e5b8db7ce8ede0b237973798586f972f50b5e5ced45b7dc872dfe0153891af",
+    "pages": 1,
+    "page_sizes_points": [
+      [
+        1191.0,
+        842.0
+      ]
+    ]
+  },
+  {
+    "id": 20,
+    "file": "reference/FW_ Laatste versie plannen/BA_BUCKINX_T_N_TERREINPROFIEL 2 .pdf",
+    "bytes": 139051,
+    "sha256": "e7f187de05aa2af23f83179ed4e36f432e5f8f5ec60c27b8f5f1465e37db1523",
+    "pages": 1,
+    "page_sizes_points": [
+      [
+        1191.0,
+        842.0
+      ]
+    ]
+  },
+  {
+    "id": 21,
+    "file": "reference/FW_ Laatste versie plannen/BA_BUCKINX_T_N_TERREINPROFIEL 3 .pdf",
+    "bytes": 149134,
+    "sha256": "194b0ffdde873a3e0a6ee9d472663edd06dc75e2a3e5f4475c0a01ec29b3c676",
+    "pages": 1,
+    "page_sizes_points": [
+      [
+        1191.0,
+        842.0
+      ]
+    ]
+  },
+  {
+    "id": 22,
+    "file": "reference/FW_ Laatste versie plannen/BA_BUCKINX_T_N_TERREINPROFIEL 4.pdf",
+    "bytes": 240440,
+    "sha256": "7582d6ae6ca84db219355318cf74c4f35969faedbb43f99164c786fa54826cb0",
+    "pages": 1,
+    "page_sizes_points": [
+      [
+        1191.0,
+        842.0
+      ]
+    ]
+  },
+  {
+    "id": 23,
+    "file": "reference/FW_ Laatste versie plannen/Fundering - riolering nieuw.dwg",
+    "bytes": 1615236,
+    "sha256": "10a142e34eaefd7bf0517217acf6e28db758081b7a237222edfba369154eeeff",
+    "dwg_header": "AC1027",
+    "geometry_status": "unparsed; header inspection only"
+  },
+  {
+    "id": 24,
+    "file": "reference/FW_ Laatste versie plannen/Gevels nieuw.dwg",
+    "bytes": 348506,
+    "sha256": "3d820bfffc373609404dace261232a005bff386e52e73aae8ef766810876dd16",
+    "dwg_header": "AC1027",
+    "geometry_status": "unparsed; header inspection only"
+  },
+  {
+    "id": 25,
+    "file": "reference/FW_ Laatste versie plannen/Grondplan nieuw.dwg",
+    "bytes": 1113193,
+    "sha256": "6a072e0552ffed10f8c8c9b86260ae5513cc9a84d29eae379604edddb6117ce2",
+    "dwg_header": "AC1027",
+    "geometry_status": "unparsed; header inspection only"
+  },
+  {
+    "id": 26,
+    "file": "reference/FW_ Laatste versie plannen/Inplanting nieuw.dwg",
+    "bytes": 378473,
+    "sha256": "80b87c3187d242d7144dbb5795897d1161e51b9cb5d672d57158db8400feb63b",
+    "dwg_header": "AC1027",
+    "geometry_status": "unparsed; header inspection only"
+  },
+  {
+    "id": 27,
+    "file": "reference/FW_ Laatste versie plannen/Legende.dwg",
+    "bytes": 40552,
+    "sha256": "bf8b48541978c7ef248f84b272de096e23873a7771ffa6c0f9a77a20983172b3",
+    "dwg_header": "AC1027",
+    "geometry_status": "unparsed; header inspection only"
+  },
+  {
+    "id": 28,
+    "file": "reference/FW_ Laatste versie plannen/Snedes nieuw.dwg",
+    "bytes": 1867263,
+    "sha256": "b6b658533cd6aa1d0f1664613eb6747ce70609c8c0f00c3615128f826c274af5",
+    "dwg_header": "AC1027",
+    "geometry_status": "unparsed; header inspection only"
+  },
+  {
+    "id": 29,
+    "file": "reference/FW_ Laatste versie plannen/Terreinprofiel nieuw.dwg",
+    "bytes": 290860,
+    "sha256": "ab6fae63f126eab00e28b9f5176b9e94c0a177ec0b9b6f150bfec0920edc9537",
+    "dwg_header": "AC1027",
+    "geometry_status": "unparsed; header inspection only"
+  },
+  {
+    "id": 30,
+    "file": "reference/FW_ Laatste versie plannen/Verdieping 1 nieuw.dwg",
+    "bytes": 942775,
+    "sha256": "044ebed466b2599f66428291ac007afd28c4df3578f9ff22c5cb31d3ba679149",
+    "dwg_header": "AC1027",
+    "geometry_status": "unparsed; header inspection only"
+  },
+  {
+    "id": 31,
+    "file": "reference/FW_ Laatste versie plannen/Verdieping 2 nieuw.dwg",
+    "bytes": 578444,
+    "sha256": "adf322a4fd6101db1287bd7d546df1f269dadd9e8443127a4d6c9fa99184e82e",
+    "dwg_header": "AC1027",
+    "geometry_status": "unparsed; header inspection only"
+  }
+]

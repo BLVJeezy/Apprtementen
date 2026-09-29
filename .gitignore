@@ -8,3 +8,7 @@ playwright-report/
 .DS_Store
 .env*
 !.env.example
+*.tsbuildinfo
+analysis/__pycache__/
+analysis/text/
+analysis/contact-*.jpg
