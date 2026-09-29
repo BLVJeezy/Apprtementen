@@ -1,0 +1,10 @@
+node_modules/
+dist/
+reference/
+sources/
+analysis/renders/
+test-results/
+playwright-report/
+.DS_Store
+.env*
+!.env.example

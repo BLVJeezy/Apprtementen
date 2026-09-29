@@ -1,0 +1,6 @@
+# Decisions
+- Current project mirror contains no existing Git repository; initialized a local repository without connecting or publishing to a remote. Awaiting any client-supplied existing repository path.
+- Vite + React + TypeScript, static hosting compatible with Vercel. Runtime JSON content supports updates without recompiling UI.
+- PDF drawings provide authoritative fallback geometry because no installed DWG reader was detected. Keep final model assets replaceable; do not fabricate unverified 3D.
+- Dutch customer-facing copy follows the supplied Flemish architectural package. Solyn is provisional branding.
+- No invented sales contact. Enquiry can be prepared and downloaded locally; configurable mailto when client supplies recipient. Explicitly indicate delivery status.
