@@ -11,6 +11,7 @@ export type FloorGeometry = {
   ceilingPolygons?: Polygon[];
   ceilingHeight?: number;
   facadePolygons: Polygon[];
+  exposedRoofPolygons?: Polygon[];
   roofPolygons?: Polygon[] | null;
   roofBaseElevation?: number;
   roofThickness?: number;

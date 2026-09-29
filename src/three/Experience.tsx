@@ -33,19 +33,35 @@ export default function Experience({
     Boolean(document.fullscreenElement),
   );
   const [screenMessage, setScreenMessage] = useState("");
+  const immersive = useRef(false);
   useEffect(() => {
-    const changed = () => setFullscreen(Boolean(document.fullscreenElement));
+    const changed = () => {
+      if (document.fullscreenElement) {
+        setFullscreen(true);
+        immersive.current = true;
+      } else if (document.fullscreenEnabled) {
+        setFullscreen(false);
+        immersive.current = false;
+      }
+    };
     document.addEventListener("fullscreenchange", changed);
     return () => document.removeEventListener("fullscreenchange", changed);
   }, []);
   const toggleFullscreen = async () => {
-    try {
+    if (fullscreen) {
+      setFullscreen(false);
+      immersive.current = false;
       if (document.fullscreenElement) await document.exitFullscreen();
-      else await document.documentElement.requestFullscreen();
+      return;
+    }
+    setFullscreen(true);
+    immersive.current = true;
+    try {
+      await document.documentElement.requestFullscreen();
       setScreenMessage("");
     } catch {
       setScreenMessage(
-        "Volledig scherm is niet beschikbaar in deze browser. De grote rondleiding blijft bruikbaar.",
+        "Beeldvullende weergave · browserbalken worden door uw browser beheerd.",
       );
     }
   };
@@ -69,10 +85,15 @@ export default function Experience({
   };
   return (
     <dialog
-      className="experience"
+      className={`experience${fullscreen ? " experience-immersive" : ""}`}
       ref={dialog}
       aria-label="Interactieve 3D rondleiding"
-      onCancel={closeTour}
+      onCancel={(e) => {
+        if (fullscreen) {
+          e.preventDefault();
+          void toggleFullscreen();
+        } else closeTour();
+      }}
       onClose={closeTour}
     >
       <div className="experience-top">
@@ -207,11 +228,11 @@ export default function Experience({
         <details>
           <summary>Over deze 3D-weergave</summary>
           <p>
-            Wandcontouren en verdiepingsvormen zijn rechtstreeks uit de
-            architectuurplannen opgebouwd. Openingen worden als uitsparingen
-            getoond. Meubilair, materialen en het omringende landschap zijn een
-            indicatieve aankleding. Dit is een vereenvoudigd ruimtelijk model;
-            raamdetails, deuren, leuningen en dakafwerking zijn nog niet
+            Wandcontouren, raamkaders en glasbalustrades zijn uit de
+            architectuurplannen opgebouwd. Gevelkleuren volgen de aangeleverde
+            referenties. Meubilair, materialen en het omringende landschap zijn
+            een indicatieve aankleding. Dit is een vereenvoudigd ruimtelijk
+            model; deuren, aansluitdetails en dakafwerking zijn nog niet
             volledig gereconstrueerd. De originele plannen blijven leidend.
           </p>
         </details>

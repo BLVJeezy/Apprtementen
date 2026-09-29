@@ -132,3 +132,45 @@ test("WebGL failure leaves working plans and dismissible tour", async ({
   await dialog.getByRole("button", { name: "Terug naar de plannen" }).click();
   await expect(page.locator(".apartment-card")).toHaveCount(4);
 });
+
+test("mobile immersive fallback fills the viewport with controls at the side", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.addInitScript(() => {
+    Element.prototype.requestFullscreen = () =>
+      Promise.reject(new Error("Unavailable"));
+  });
+  await page.goto("/");
+  await page
+    .getByRole("button", { name: "Enter the apartment", exact: true })
+    .click();
+  const dialog = page.getByRole("dialog", {
+    name: "Interactieve 3D rondleiding",
+  });
+  await expect(dialog.locator(".scene-canvas")).toHaveAttribute(
+    "data-scene-status",
+    "ready",
+    { timeout: 20000 },
+  );
+  await dialog
+    .getByRole("button", { name: "Volledig scherm", exact: true })
+    .click();
+  await expect(dialog).toHaveClass(/experience-immersive/);
+  const stage = (await dialog.locator(".experience-stage").boundingBox())!;
+  expect(stage.x).toBe(0);
+  expect(stage.y).toBe(0);
+  expect(stage.width).toBe(390);
+  expect(stage.height).toBe(844);
+  const controls = (await dialog
+    .locator(".experience-controls")
+    .boundingBox())!;
+  expect(controls.x).toBeGreaterThan(260);
+  expect(controls.width).toBeLessThan(120);
+  await expect(dialog.locator(".experience-help")).toBeHidden();
+  await page.screenshot({ path: "/tmp/solyn-fullscreen-mobile-final.png" });
+  await dialog
+    .getByRole("button", { name: "Verlaat volledig scherm", exact: true })
+    .click();
+  await expect(dialog).not.toHaveClass(/experience-immersive/);
+});

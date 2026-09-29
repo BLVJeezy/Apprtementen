@@ -26,8 +26,8 @@
     },
     {
       "id": "photoreal-facade-details",
-      "status": "pending",
-      "notes": "Verified glazing, frames and railings; see HANDOFF.md. Agent usage limit interrupted extraction."
+      "status": "in_progress",
+      "notes": "Source frames/glazing/railings now rendered. Exact photorealistic materials, recess/detail validation and site terrain remain specialist follow-up; see HANDOFF.md."
     }
   ]
 }

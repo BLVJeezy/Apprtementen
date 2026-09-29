@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
+import { createFacades, type FacadeElement } from "./Facades";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { mergeGeometries } from "three/addons/utils/BufferGeometryUtils.js";
 import type {
@@ -20,7 +21,7 @@ export type SceneCanvasProps = {
   paused?: boolean;
 };
 const wallMat = new THREE.MeshStandardMaterial({
-  color: 0xd7d0bc,
+  color: 0xeee9de,
   roughness: 0.91,
 });
 const brickMat = new THREE.MeshStandardMaterial({
@@ -37,7 +38,7 @@ const floorMat = new THREE.MeshStandardMaterial({
   side: THREE.DoubleSide,
 });
 const frameMat = new THREE.MeshStandardMaterial({
-  color: 0x303933,
+  color: 0x303335,
   roughness: 0.7,
 });
 const fabricMat = new THREE.MeshStandardMaterial({
@@ -150,10 +151,6 @@ function landscape(scene: THREE.Scene, bounds: number[]) {
     color: 0x697e52,
     roughness: 1,
   });
-  const green2 = new THREE.MeshStandardMaterial({
-    color: 0x7f9361,
-    roughness: 1,
-  });
   const trunk = new THREE.MeshStandardMaterial({
     color: 0x78664b,
     roughness: 1,
@@ -171,15 +168,34 @@ function landscape(scene: THREE.Scene, bounds: number[]) {
     );
     stem.position.y = h / 2;
     tree.add(stem);
-    for (let k = 0; k < 3; k++) {
-      const leaves = new THREE.Mesh(
-        new THREE.IcosahedronGeometry(1.6 + (i % 3) * 0.25, 2),
-        k % 2 ? green : green2,
+    const crown = new THREE.InstancedMesh(
+      new THREE.IcosahedronGeometry(0.42, 1),
+      green,
+      90,
+    );
+    const transform = new THREE.Object3D();
+    for (let k = 0; k < 90; k++) {
+      const angle = k * 2.39996 + i;
+      const radius = 1.6 * Math.sqrt(((k * 37) % 91) / 91);
+      transform.position.set(
+        Math.cos(angle) * radius,
+        h + 0.5 + Math.sin(k * 7.13) * 1.35,
+        Math.sin(angle) * radius,
       );
-      leaves.position.set((k - 1) * 0.5, h + k * 0.42, Math.sin(k) * 0.4);
-      leaves.castShadow = true;
-      tree.add(leaves);
+      transform.scale.setScalar(0.65 + ((k * 13) % 11) / 13);
+      transform.updateMatrix();
+      crown.setMatrixAt(k, transform.matrix);
+      crown.setColorAt(
+        k,
+        new THREE.Color().setHSL(
+          0.23 + (k % 5) * 0.008,
+          0.28,
+          0.25 + (k % 7) * 0.022,
+        ),
+      );
     }
+    crown.castShadow = true;
+    tree.add(crown);
     tree.position.set(x, 0, z);
     scene.add(tree);
   }
@@ -260,6 +276,12 @@ export default function SceneCanvas({
         });
         if (!response.ok) throw Error("Model unavailable");
         const data: Architecture = await response.json();
+        const facadeResponse = await fetch("/models/facades.json", {
+          signal: abort.signal,
+        });
+        if (!facadeResponse.ok) throw Error("Facade data unavailable");
+        const facadeData: { elements: FacadeElement[] } =
+          await facadeResponse.json();
         if (disposed) return;
         const surface = document.createElement("canvas");
         const context = surface.getContext("webgl2", {
@@ -280,7 +302,7 @@ export default function SceneCanvas({
         renderer.shadowMap.type = THREE.PCFShadowMap;
         renderer.outputColorSpace = THREE.SRGBColorSpace;
         renderer.toneMapping = THREE.ACESFilmicToneMapping;
-        renderer.toneMappingExposure = 1.12;
+        renderer.toneMappingExposure = 1.0;
         holder.appendChild(renderer.domElement);
         renderer.domElement.setAttribute(
           "aria-label",
@@ -291,8 +313,8 @@ export default function SceneCanvas({
         scene = new THREE.Scene();
         scene.background = new THREE.Color(0xd8e4e4);
         scene.fog = new THREE.Fog(0xd8e4e4, 85, 175);
-        scene.add(new THREE.HemisphereLight(0xe8f4ff, 0x8c795f, 2.6));
-        const sun = new THREE.DirectionalLight(0xfff0cf, 3.4);
+        scene.add(new THREE.HemisphereLight(0xe8f4ff, 0x8c795f, 1.8));
+        const sun = new THREE.DirectionalLight(0xfff6e5, 2.5);
         sun.position.set(-25, 45, 32);
         sun.castShadow = true;
         sun.shadow.mapSize.set(2048, 2048);
@@ -384,7 +406,25 @@ export default function SceneCanvas({
               slabMat,
             ),
           );
-          g.add(extrude(polys, 0.012, floor.elevation + 0.005, floorMat));
+          g.add(extrude(polys, 0.012, floor.elevation + 0.005, slabMat));
+          g.add(
+            extrude(
+              floor.ceilingPolygons || [],
+              0.012,
+              floor.elevation + 0.019,
+              floorMat,
+            ),
+          );
+          if (floor.exposedRoofPolygons?.length) {
+            const cap = extrude(
+              floor.exposedRoofPolygons,
+              0.16,
+              floor.elevation + 2.69,
+              slabMat,
+            );
+            cap.name = "exposed-roof";
+            g.add(cap);
+          }
           g.add(
             extrude(
               floor.wallPolygons,
@@ -396,7 +436,7 @@ export default function SceneCanvas({
           g.add(
             extrude(
               floor.facadePolygons,
-              floor.wallHeight,
+              floor.level === 2 ? 2.3 : 2.85,
               floor.elevation,
               brickMat,
             ),
@@ -411,6 +451,9 @@ export default function SceneCanvas({
             ceiling.name = "interior-ceiling";
             g.add(ceiling);
           }
+          g.add(
+            createFacades(facadeData.elements, floor.level, brickMat, frameMat),
+          );
           g.add(furnishings(floor));
           floorGroups.push(g);
           scene.add(g);
@@ -418,14 +461,7 @@ export default function SceneCanvas({
         const roofGroup = new THREE.Group();
         const top = data.floors[2];
         if (top.roofPolygons?.length)
-          roofGroup.add(
-            extrude(
-              top.roofPolygons,
-              top.roofThickness || 0.22,
-              top.roofBaseElevation || top.elevation + top.wallHeight,
-              frameMat,
-            ),
-          );
+          roofGroup.add(extrude(top.roofPolygons, 0.8, 8.0, frameMat));
         scene.add(roofGroup);
         landscape(scene, bounds);
         const keys = new Set<string>();
@@ -446,13 +482,15 @@ export default function SceneCanvas({
           floorGroups.forEach((g) => {
             const ceiling = g.getObjectByName("interior-ceiling");
             if (ceiling) ceiling.visible = current.mode !== "overview";
+            const cap = g.getObjectByName("exposed-roof");
+            if (cap) cap.visible = current.mode !== "overview";
           });
           roofGroup.visible = current.mode === "exterior";
           controls!.enabled = current.mode !== "walk";
           keys.clear();
           if (current.mode === "exterior") {
             const fit = Math.max(1, 1.65 / camera.aspect);
-            camera.position.set(cx + 30 * fit, 4 + 20 * fit, cz + 38 * fit);
+            camera.position.set(cx + 22 * fit, 4 + 10 * fit, cz + 44 * fit);
             controls!.target.set(cx, 4, cz);
             camera.fov = 43;
           } else if (current.mode === "overview") {

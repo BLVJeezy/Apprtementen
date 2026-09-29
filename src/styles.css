@@ -1636,4 +1636,177 @@ dialog .fine {
   outline: 3px solid #263e36;
   outline-offset: 4px;
 }
-.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+/* Immersive mode keeps the actual 3D viewport edge-to-edge, including browsers without the Fullscreen API. */
+.experience.experience-immersive {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100dvh;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  background: #d8e4e4;
+}
+.experience.experience-immersive .experience-stage {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+}
+.experience-immersive .experience-top {
+  position: absolute;
+  z-index: 3;
+  top: env(safe-area-inset-top, 0px);
+  right: env(safe-area-inset-right, 0px);
+  padding: 12px;
+  background: none;
+  pointer-events: none;
+}
+.experience-immersive .experience-top > div:first-child {
+  display: none;
+}
+.experience-immersive .experience-window-controls {
+  pointer-events: auto;
+}
+.experience-immersive .experience-controls {
+  position: absolute;
+  z-index: 2;
+  bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+  left: 164px;
+  right: 12px;
+  padding: 10px;
+  border: 0;
+  background: #f7f6f1e8;
+  border-radius: 8px;
+  gap: 10px;
+}
+.experience-immersive .experience-help,
+.experience-immersive .screen-status {
+  display: none;
+}
+.experience-immersive .experience-badge {
+  top: calc(18px + env(safe-area-inset-top, 0px));
+  left: 16px;
+}
+.experience-immersive .scene-actions {
+  top: calc(80px + env(safe-area-inset-top, 0px));
+  right: 16px;
+}
+.experience-immersive .walk-joystick {
+  bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+}
+@media (max-width: 700px) {
+  .experience-immersive .experience-controls {
+    left: 150px;
+    right: 8px;
+    bottom: calc(8px + env(safe-area-inset-bottom, 0px));
+    padding: 8px;
+    gap: 7px;
+  }
+  .experience-immersive .experience-modes {
+    gap: 3px;
+    flex-wrap: wrap;
+  }
+  .experience-immersive .experience-modes button {
+    font-size: 10px;
+    padding: 7px 5px;
+    min-height: 36px;
+  }
+  .experience-immersive .experience-modes svg {
+    display: none;
+  }
+  .experience-immersive .experience-selectors {
+    gap: 5px;
+  }
+  .experience-immersive .experience-selectors label {
+    font-size: 10px;
+    min-width: 0;
+  }
+  .experience-immersive .experience-selectors select {
+    padding: 6px 2px;
+    min-height: 36px;
+    font-size: 11px;
+    width: 100%;
+  }
+  .experience-immersive .experience-badge {
+    font-size: 12px;
+    padding: 10px;
+  }
+  .experience-immersive .experience-badge span {
+    font-size: 10px;
+  }
+}
+.experience-immersive .experience-controls {
+  left: auto;
+  right: calc(12px + env(safe-area-inset-right, 0px));
+  top: 50%;
+  bottom: auto;
+  transform: translateY(-50%);
+  width: 148px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  padding: 10px;
+}
+.experience-immersive .experience-modes {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 6px;
+}
+.experience-immersive .experience-modes button {
+  justify-content: flex-start;
+  font-size: 11px;
+  padding: 10px 7px;
+  min-height: 42px;
+}
+.experience-immersive .experience-selectors {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+}
+.experience-immersive .experience-selectors label {
+  width: 100%;
+  font-size: 10px;
+}
+.experience-immersive .experience-selectors select {
+  width: 100%;
+  min-height: 38px;
+  font-size: 11px;
+  padding: 7px 4px;
+}
+@media (max-width: 700px) {
+  .experience-immersive .experience-controls {
+    width: 108px;
+    right: calc(8px + env(safe-area-inset-right, 0px));
+    padding: 7px;
+  }
+  .experience-immersive .experience-modes button {
+    font-size: 10px;
+    padding: 8px 4px;
+  }
+  .experience-immersive .experience-selectors select {
+    font-size: 10px;
+  }
+  .experience-immersive .walk-joystick {
+    left: 16px;
+    width: 108px;
+    height: 108px;
+  }
+}
