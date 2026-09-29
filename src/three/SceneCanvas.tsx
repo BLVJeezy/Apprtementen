@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { createFacades, type FacadeElement } from "./Facades";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 import { mergeGeometries } from "three/addons/utils/BufferGeometryUtils.js";
 import type {
   Architecture,
@@ -24,8 +25,9 @@ const wallMat = new THREE.MeshStandardMaterial({
   color: 0xeee9de,
   roughness: 0.91,
 });
+// Slight buff tint pulls the source brick toward the supplied render's pale sand brick.
 const brickMat = new THREE.MeshStandardMaterial({
-  color: 0xffffff,
+  color: 0xf7f1e7,
   roughness: 0.96,
 });
 const slabMat = new THREE.MeshStandardMaterial({
@@ -37,9 +39,16 @@ const floorMat = new THREE.MeshStandardMaterial({
   roughness: 0.85,
   side: THREE.DoubleSide,
 });
+// Anthracite powder-coated aluminium for frames, fascia and coping.
 const frameMat = new THREE.MeshStandardMaterial({
-  color: 0x303335,
-  roughness: 0.7,
+  color: 0x2e3133,
+  roughness: 0.42,
+  metalness: 0.45,
+});
+// Charcoal bitumen/EPDM roof membrane, matched to the supplied render.
+const roofMat = new THREE.MeshStandardMaterial({
+  color: 0x4a4d50,
+  roughness: 0.96,
 });
 const fabricMat = new THREE.MeshStandardMaterial({
   color: 0xe8e4d7,
@@ -137,76 +146,196 @@ function furnishings(floor: FloorGeometry) {
   }
   return g;
 }
+function noiseTexture(
+  base: [number, number, number],
+  spread: number,
+  size = 256,
+  repeat = 1,
+) {
+  const canvas = document.createElement("canvas");
+  canvas.width = canvas.height = size;
+  const ctx = canvas.getContext("2d")!;
+  const img = ctx.createImageData(size, size);
+  let seed = 7;
+  const rand = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+  for (let i = 0; i < size * size; i++) {
+    const n = (rand() - 0.5) * spread;
+    img.data.set(
+      [base[0] + n, base[1] + n * 1.1, base[2] + n * 0.8, 255],
+      i * 4,
+    );
+  }
+  ctx.putImageData(img, 0, 0);
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+  texture.repeat.set(repeat, repeat);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  return texture;
+}
 function landscape(scene: THREE.Scene, bounds: number[]) {
   const [x0, z0, x1, z1] = bounds;
-  const ground = new THREE.Mesh(
-    new THREE.PlaneGeometry(260, 260),
-    new THREE.MeshStandardMaterial({ color: 0x8f9d74, roughness: 1 }),
+  const cx = (x0 + x1) / 2;
+  const flat = (
+    w: number,
+    d: number,
+    x: number,
+    y: number,
+    z: number,
+    mat: THREE.Material,
+  ) => {
+    const mesh = new THREE.Mesh(new THREE.PlaneGeometry(w, d), mat);
+    mesh.rotation.x = -Math.PI / 2;
+    mesh.position.set(x, y, z);
+    mesh.receiveShadow = true;
+    scene.add(mesh);
+    return mesh;
+  };
+  flat(
+    260,
+    260,
+    cx,
+    -0.2,
+    (z0 + z1) / 2,
+    new THREE.MeshStandardMaterial({
+      map: noiseTexture([112, 146, 80], 34, 256, 60),
+      roughness: 1,
+    }),
   );
-  ground.rotation.x = -Math.PI / 2;
-  ground.position.set((x0 + x1) / 2, -0.2, (z0 + z1) / 2);
-  ground.receiveShadow = true;
-  scene.add(ground);
+  // Illustrative street context in front of the building (not a surveyed site plan).
+  const paving = new THREE.MeshStandardMaterial({
+    map: noiseTexture([190, 185, 174], 22, 128, 30),
+    roughness: 0.95,
+  });
+  const terrace = new THREE.MeshStandardMaterial({
+    map: noiseTexture([202, 197, 186], 16, 128, 12),
+    roughness: 0.9,
+  });
+  flat(x1 - x0 + 1, 2.4, cx, -0.185, z1 + 1.2, terrace);
+  flat(2.4, 9, cx + 4, -0.188, z1 + 6, terrace);
+  flat(200, 3.2, cx, -0.18, z1 + 12, paving);
+  flat(
+    200,
+    1.8,
+    cx,
+    -0.182,
+    z1 + 14.5,
+    new THREE.MeshStandardMaterial({ color: 0x9c5a4d, roughness: 0.95 }),
+  );
+  flat(
+    200,
+    7.5,
+    cx,
+    -0.184,
+    z1 + 19.1,
+    new THREE.MeshStandardMaterial({
+      map: noiseTexture([78, 80, 83], 18, 128, 40),
+      roughness: 0.9,
+    }),
+  );
+  const marking = new THREE.MeshStandardMaterial({
+    color: 0xe8e8e2,
+    roughness: 0.8,
+  });
+  for (let x = cx - 100; x < cx + 100; x += 6)
+    flat(3, 0.14, x, -0.178, z1 + 19.1, marking);
+  const hedge = new THREE.MeshStandardMaterial({
+    map: noiseTexture([70, 98, 52], 40, 64, 4),
+    roughness: 1,
+  });
+  const hedgeRun = (from: number, to: number, z: number) => {
+    const mesh = new THREE.Mesh(
+      new THREE.BoxGeometry(to - from, 0.9, 0.8),
+      hedge,
+    );
+    mesh.position.set((from + to) / 2, 0.25, z);
+    mesh.castShadow = mesh.receiveShadow = true;
+    scene.add(mesh);
+  };
+  hedgeRun(x0 - 2, cx + 2.6, z1 + 9.8);
+  hedgeRun(cx + 5.4, x1 + 2, z1 + 9.8);
+  hedgeRun(x0 + 1, cx - 2, z1 + 3.2);
+  hedgeRun(cx + 10, x1 - 1, z1 + 3.2);
   const green = new THREE.MeshStandardMaterial({
-    color: 0x697e52,
+    color: 0xffffff,
     roughness: 1,
   });
   const trunk = new THREE.MeshStandardMaterial({
-    color: 0x78664b,
+    color: 0x6f5e48,
     roughness: 1,
   });
-  // Decorative landscape outside the model, not a proposed plot or garden allocation.
-  for (let i = 0; i < 22; i++) {
-    const side = i % 2 ? -1 : 1;
-    const x = (x0 + x1) / 2 + side * (28 + (i % 4) * 3);
-    const z = z0 - 18 + Math.floor(i / 2) * 5;
-    const h = 3.1 + (i % 3) * 0.7;
-    const tree = new THREE.Group();
+  const tree = (
+    x: number,
+    z: number,
+    h: number,
+    spread: number,
+    i: number,
+    shadow = true,
+  ) => {
+    const group = new THREE.Group();
     const stem = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.12, 0.19, h, 6),
+      new THREE.CylinderGeometry(0.08 * spread, 0.14 * spread, h, 6),
       trunk,
     );
     stem.position.y = h / 2;
-    tree.add(stem);
+    stem.castShadow = shadow;
+    group.add(stem);
     const crown = new THREE.InstancedMesh(
-      new THREE.IcosahedronGeometry(0.42, 1),
+      new THREE.IcosahedronGeometry(0.36 * spread, 1),
       green,
-      90,
+      70,
     );
     const transform = new THREE.Object3D();
-    for (let k = 0; k < 90; k++) {
+    const hue = 0.2 + (i % 5) * 0.012;
+    for (let k = 0; k < 70; k++) {
       const angle = k * 2.39996 + i;
-      const radius = 1.6 * Math.sqrt(((k * 37) % 91) / 91);
+      const radius = 1.5 * spread * Math.sqrt(((k * 37) % 71) / 71);
+      const lift = Math.sin(k * 7.13) * 1.3 * spread;
       transform.position.set(
         Math.cos(angle) * radius,
-        h + 0.5 + Math.sin(k * 7.13) * 1.35,
+        h + 0.4 * spread + lift,
         Math.sin(angle) * radius,
       );
-      transform.scale.setScalar(0.65 + ((k * 13) % 11) / 13);
+      transform.scale.setScalar(0.7 + ((k * 13) % 11) / 14);
       transform.updateMatrix();
       crown.setMatrixAt(k, transform.matrix);
+      // Brighter leaves near the top, shaded underneath.
       crown.setColorAt(
         k,
         new THREE.Color().setHSL(
-          0.23 + (k % 5) * 0.008,
-          0.28,
-          0.25 + (k % 7) * 0.022,
+          hue + (k % 3) * 0.01,
+          0.4,
+          0.2 + (lift / spread + 1.3) * 0.05 + (k % 4) * 0.012,
+          THREE.SRGBColorSpace,
         ),
       );
     }
-    crown.castShadow = true;
-    tree.add(crown);
-    tree.position.set(x, 0, z);
-    scene.add(tree);
+    crown.castShadow = shadow;
+    group.add(crown);
+    group.position.set(x, -0.2, z);
+    scene.add(group);
+  };
+  // Decorative landscape outside the model, not a proposed plot or garden allocation.
+  for (let i = 0; i < 22; i++) {
+    const side = i % 2 ? -1 : 1;
+    tree(
+      cx + side * (28 + (i % 4) * 3.5) + Math.sin(i * 3.1) * 1.5,
+      z0 - 18 + Math.floor(i / 2) * 5,
+      3.1 + (i % 3) * 0.7,
+      1 + (i % 4) * 0.12,
+      i,
+    );
   }
-  const walk = new THREE.Mesh(
-    new THREE.PlaneGeometry(x1 - x0 + 6, 4),
-    new THREE.MeshStandardMaterial({ color: 0xc5c3af, roughness: 1 }),
-  );
-  walk.rotation.x = -Math.PI / 2;
-  walk.position.set((x0 + x1) / 2, -0.18, z1 + 4);
-  walk.receiveShadow = true;
-  scene.add(walk);
+  for (let i = 0; i < 5; i++)
+    tree(x0 - 4 + i * 12, z1 + 12.2, 2.2, 0.6, i + 30);
+  for (let i = 0; i < 14; i++)
+    tree(
+      cx - 55 + i * 8.5,
+      z0 - 30 - (i % 3) * 4,
+      5 + (i % 4),
+      1.5,
+      i + 50,
+      false,
+    );
 }
 function inside(p: THREE.Vector3, polygon: Polygon) {
   const ring = (poly: number[][]) => {
@@ -311,10 +440,33 @@ export default function SceneCanvas({
         renderer.domElement.setAttribute("role", "img");
         renderer.domElement.tabIndex = 0;
         scene = new THREE.Scene();
-        scene.background = new THREE.Color(0xd8e4e4);
-        scene.fog = new THREE.Fog(0xd8e4e4, 85, 175);
-        scene.add(new THREE.HemisphereLight(0xe8f4ff, 0x8c795f, 1.8));
-        const sun = new THREE.DirectionalLight(0xfff6e5, 2.5);
+        const skyCanvas = document.createElement("canvas");
+        skyCanvas.width = 2;
+        skyCanvas.height = 256;
+        const sky = skyCanvas.getContext("2d")!;
+        const gradient = sky.createLinearGradient(0, 0, 0, 256);
+        gradient.addColorStop(0, "#8fb3d4");
+        gradient.addColorStop(0.55, "#c9dbe6");
+        gradient.addColorStop(1, "#e6e8e2");
+        sky.fillStyle = gradient;
+        sky.fillRect(0, 0, 2, 256);
+        const skyTexture = new THREE.CanvasTexture(skyCanvas);
+        skyTexture.colorSpace = THREE.SRGBColorSpace;
+        scene.background = skyTexture;
+        scene.fog = new THREE.Fog(0xdfe4e0, 90, 190);
+        // Studio reflections only on glass and aluminium: scene-wide env lighting
+        // roughly doubled fragment cost on software/mobile GPUs.
+        const pmrem = new THREE.PMREMGenerator(renderer);
+        const reflections = pmrem.fromScene(
+          new RoomEnvironment(),
+          0.04,
+        ).texture;
+        pmrem.dispose();
+        frameMat.envMap = reflections;
+        frameMat.envMapIntensity = 0.5;
+        frameMat.needsUpdate = true;
+        scene.add(new THREE.HemisphereLight(0xdcecff, 0x8a8270, 2.0));
+        const sun = new THREE.DirectionalLight(0xffeccf, 2.9);
         sun.position.set(-25, 45, 32);
         sun.castShadow = true;
         sun.shadow.mapSize.set(2048, 2048);
@@ -452,7 +604,13 @@ export default function SceneCanvas({
             g.add(ceiling);
           }
           g.add(
-            createFacades(facadeData.elements, floor.level, brickMat, frameMat),
+            createFacades(
+              facadeData.elements,
+              floor.level,
+              brickMat,
+              frameMat,
+              reflections,
+            ),
           );
           g.add(furnishings(floor));
           floorGroups.push(g);
@@ -460,8 +618,10 @@ export default function SceneCanvas({
         }
         const roofGroup = new THREE.Group();
         const top = data.floors[2];
-        if (top.roofPolygons?.length)
-          roofGroup.add(extrude(top.roofPolygons, 0.8, 8.0, frameMat));
+        if (top.roofPolygons?.length) {
+          roofGroup.add(extrude(top.roofPolygons, 0.78, 8.0, frameMat));
+          roofGroup.add(extrude(top.roofPolygons, 0.02, 8.78, roofMat));
+        }
         scene.add(roofGroup);
         landscape(scene, bounds);
         const keys = new Set<string>();

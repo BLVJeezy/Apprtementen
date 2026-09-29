@@ -27,7 +27,7 @@
     {
       "id": "photoreal-facade-details",
       "status": "in_progress",
-      "notes": "Source frames/glazing/railings now rendered. Exact photorealistic materials, recess/detail validation and site terrain remain specialist follow-up; see HANDOFF.md."
+      "notes": "Materials/lighting/street context tuned to supplied render (Claude, 29 Sep). Remaining: real-phone performance check, exact construction details, surveyed site/landscaping; see HANDOFF.md."
     }
   ]
 }

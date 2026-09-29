@@ -15,17 +15,19 @@ export function createFacades(
   level: number,
   brick: THREE.Material,
   frame: THREE.Material,
+  envMap: THREE.Texture | null = null,
 ) {
   const group = new THREE.Group();
   const glass = new THREE.MeshPhysicalMaterial({
-    color: 0xb8ccd2,
-    roughness: 0.13,
-    metalness: 0.15,
+    color: 0x8fa6ad,
+    roughness: 0.04,
+    metalness: 0.1,
     transparent: true,
-    opacity: 0.36,
+    opacity: 0.5,
     side: THREE.DoubleSide,
     depthWrite: false,
-    envMapIntensity: 1.2,
+    envMap,
+    envMapIntensity: 0.9,
   });
   for (const e of elements.filter((e) => e.level === level)) {
     const alongX = e.face === "front" || e.face === "rear";
