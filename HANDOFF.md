@@ -19,7 +19,7 @@ Facade extraction now implemented in scripts/extract-facades.py (PyMuPDF + Shape
 
 Fullscreen now makes the canvas fill 100vw × 100dvh, with compact right-side controls and left joystick. Native Fullscreen API is requested; when unavailable (notably some mobile browsers), CSS immersive mode still fills the browser viewport. Browser chrome cannot be forcibly hidden where the API is unavailable. Tests include rejected API fallback and exact canvas viewport bounds.
 
-Continue realistic facade materials/lighting and validate visual quality on a real phone. Fullscreen support depends on browser; a clear fallback message is implemented. Larger Three.js chunk is lazy loaded. No paid backend or services. Configure salesEmail in public/content.json only after confirmation; current enquiry export is deliberately honest.
+Claude realism pass (29 Sep): sky gradient, charcoal roof + anthracite fascia, reflective glass/frames (env map scoped to those materials — scene-wide env map doubled software render cost), buff brick tint, illustrative street/hedges/paving in front (decorative, not surveyed). Next: check real-phone frame rate; if slow, reduce tree crown instances or disable shadows on mobile. Continue realistic facade materials/lighting and validate visual quality on a real phone. Fullscreen support depends on browser; a clear fallback message is implemented. Larger Three.js chunk is lazy loaded. No paid backend or services. Configure salesEmail in public/content.json only after confirmation; current enquiry export is deliberately honest.
 
 ## Verification
 Production build and Playwright suite should be rerun after any changes. Final results for this session are in STATE.md. Do not treat preliminary agent messages as completed changes.
