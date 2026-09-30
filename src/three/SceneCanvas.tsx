@@ -1,6 +1,9 @@
+import { batchMeshes } from "./batchMeshes";
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
+import { siteContext } from "./SiteContext";
 import { createFacades, type FacadeElement } from "./Facades";
+import { RGBELoader } from "three/addons/loaders/RGBELoader.js";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { mergeGeometries } from "three/addons/utils/BufferGeometryUtils.js";
 import type {
@@ -25,7 +28,7 @@ const wallMat = new THREE.MeshStandardMaterial({
   roughness: 0.91,
 });
 const brickMat = new THREE.MeshStandardMaterial({
-  color: 0xffffff,
+  color: 0xd1c6af,
   roughness: 0.96,
 });
 const slabMat = new THREE.MeshStandardMaterial({
@@ -135,7 +138,7 @@ function furnishings(floor: FloorGeometry) {
       box(g, 0.6, 0.8, 0.5, x, y, z, fabricMat);
     }
   }
-  return g;
+  return batchMeshes(g);
 }
 function landscape(scene: THREE.Scene, bounds: number[]) {
   const [x0, z0, x1, z1] = bounds;
@@ -143,6 +146,32 @@ function landscape(scene: THREE.Scene, bounds: number[]) {
     new THREE.PlaneGeometry(260, 260),
     new THREE.MeshStandardMaterial({ color: 0x8f9d74, roughness: 1 }),
   );
+  const grassCanvas = document.createElement("canvas");
+  grassCanvas.width = grassCanvas.height = 512;
+  const grassCtx = grassCanvas.getContext("2d")!;
+  grassCtx.fillStyle = "#657343";
+  grassCtx.fillRect(0, 0, 512, 512);
+  let seed = 831;
+  const random = () => {
+    seed = (Math.imul(seed, 1664525) + 1013904223) | 0;
+    return (seed >>> 0) / 4294967296;
+  };
+  for (let i = 0; i < 65000; i++) {
+    const v = 50 + Math.floor(random() * 50);
+    grassCtx.strokeStyle = `rgba(${v + 10},${v + 27},${v - 12},.65)`;
+    const x = random() * 512,
+      y = random() * 512;
+    grassCtx.beginPath();
+    grassCtx.moveTo(x, y);
+    grassCtx.lineTo(x + random() * 3, y - 2 - random() * 6);
+    grassCtx.stroke();
+  }
+  const grassTexture = new THREE.CanvasTexture(grassCanvas);
+  grassTexture.wrapS = grassTexture.wrapT = THREE.RepeatWrapping;
+  grassTexture.repeat.set(60, 60);
+  grassTexture.colorSpace = THREE.SRGBColorSpace;
+  ground.material.map = grassTexture;
+  ground.material.color.set(0xffffff);
   ground.rotation.x = -Math.PI / 2;
   ground.position.set((x0 + x1) / 2, -0.2, (z0 + z1) / 2);
   ground.receiveShadow = true;
@@ -156,7 +185,7 @@ function landscape(scene: THREE.Scene, bounds: number[]) {
     roughness: 1,
   });
   // Decorative landscape outside the model, not a proposed plot or garden allocation.
-  for (let i = 0; i < 22; i++) {
+  for (let i = 0; i < 14; i++) {
     const side = i % 2 ? -1 : 1;
     const x = (x0 + x1) / 2 + side * (28 + (i % 4) * 3);
     const z = z0 - 18 + Math.floor(i / 2) * 5;
@@ -169,20 +198,23 @@ function landscape(scene: THREE.Scene, bounds: number[]) {
     stem.position.y = h / 2;
     tree.add(stem);
     const crown = new THREE.InstancedMesh(
-      new THREE.IcosahedronGeometry(0.42, 1),
+      new THREE.IcosahedronGeometry(0.13, 0),
       green,
-      90,
+      700,
     );
     const transform = new THREE.Object3D();
-    for (let k = 0; k < 90; k++) {
+    for (let k = 0; k < 700; k++) {
       const angle = k * 2.39996 + i;
-      const radius = 1.6 * Math.sqrt(((k * 37) % 91) / 91);
+      const height = random() * 2 - 1;
+      const radius =
+        1.85 * Math.sqrt(1 - height * height) * Math.cbrt(random());
       transform.position.set(
         Math.cos(angle) * radius,
-        h + 0.5 + Math.sin(k * 7.13) * 1.35,
+        h + 0.5 + height * 1.9,
         Math.sin(angle) * radius,
       );
-      transform.scale.setScalar(0.65 + ((k * 13) % 11) / 13);
+      transform.scale.set(0.7 + random(), 0.3 + random() * 0.4, 1.2 + random());
+      transform.rotation.set(random() * 3, angle, random() * 3);
       transform.updateMatrix();
       crown.setMatrixAt(k, transform.matrix);
       crown.setColorAt(
@@ -199,14 +231,7 @@ function landscape(scene: THREE.Scene, bounds: number[]) {
     tree.position.set(x, 0, z);
     scene.add(tree);
   }
-  const walk = new THREE.Mesh(
-    new THREE.PlaneGeometry(x1 - x0 + 6, 4),
-    new THREE.MeshStandardMaterial({ color: 0xc5c3af, roughness: 1 }),
-  );
-  walk.rotation.x = -Math.PI / 2;
-  walk.position.set((x0 + x1) / 2, -0.18, z1 + 4);
-  walk.receiveShadow = true;
-  scene.add(walk);
+  siteContext(scene);
 }
 function inside(p: THREE.Vector3, polygon: Polygon) {
   const ring = (poly: number[][]) => {
@@ -297,7 +322,7 @@ export default function SceneCanvas({
           alpha: false,
           powerPreference: "high-performance",
         });
-        renderer.setPixelRatio(Math.min(devicePixelRatio, 1.6));
+        renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5));
         renderer.shadowMap.enabled = true;
         renderer.shadowMap.type = THREE.PCFShadowMap;
         renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -313,9 +338,34 @@ export default function SceneCanvas({
         scene = new THREE.Scene();
         scene.background = new THREE.Color(0xd8e4e4);
         scene.fog = new THREE.Fog(0xd8e4e4, 85, 175);
-        scene.add(new THREE.HemisphereLight(0xe8f4ff, 0x8c795f, 1.8));
-        const sun = new THREE.DirectionalLight(0xfff6e5, 2.5);
-        sun.position.set(-25, 45, 32);
+        try {
+          const hdr = await new RGBELoader().loadAsync(
+            "/assets/environment/kloppenheim_06_1k.hdr",
+          );
+          if (disposed) {
+            hdr.dispose();
+            return;
+          }
+          hdr.mapping = THREE.EquirectangularReflectionMapping;
+          const pmrem = new THREE.PMREMGenerator(renderer);
+          const lighting = pmrem.fromEquirectangular(hdr);
+          scene.environment = lighting.texture;
+          scene.environmentIntensity = 0.85;
+          scene.background = hdr;
+          scene.backgroundIntensity = 0.8;
+          scene.backgroundRotation.y = Math.PI * 0.7;
+          scene.environmentRotation.y = Math.PI * 0.7;
+          cleanupEvents.push(() => {
+            lighting.dispose();
+            hdr.dispose();
+          });
+          pmrem.dispose();
+        } catch {
+          /* Keep daylight fallback when the environment cannot load. */
+        }
+        scene.add(new THREE.HemisphereLight(0xe8f4ff, 0x8c795f, 0.65));
+        const sun = new THREE.DirectionalLight(0xfff3df, 2.1);
+        sun.position.set(-30, 22, 38);
         sun.castShadow = true;
         sun.shadow.mapSize.set(2048, 2048);
         Object.assign(sun.shadow.camera, {
@@ -335,7 +385,11 @@ export default function SceneCanvas({
         const cx = (bounds[0] + bounds[2]) / 2,
           cz = (bounds[1] + bounds[3]) / 2;
         const camera = new THREE.PerspectiveCamera(43, 1, 0.06, 300);
+        let drawFrames = 3;
         controls = new OrbitControls(camera, renderer.domElement);
+        controls.addEventListener("change", () => {
+          drawFrames = 3;
+        });
         controls.enableDamping = true;
         controls.dampingFactor = 0.09;
         controls.minDistance = 4;
@@ -354,6 +408,8 @@ export default function SceneCanvas({
             renderer.capabilities.getMaxAnisotropy(),
           );
           brickMat.map = texture;
+          brickMat.bumpMap = texture;
+          brickMat.bumpScale = 0.035;
           brickMat.needsUpdate = true;
         }
         if (!floorMat.map) {
@@ -471,6 +527,8 @@ export default function SceneCanvas({
         const floorNow = () =>
           data.floors.find((f) => f.level === state.current.level)!;
         const configure = () => {
+          drawFrames = 3;
+          renderer!.shadowMap.needsUpdate = true;
           const current = state.current;
           const floor = floorNow();
           floorGroups.forEach(
@@ -490,7 +548,7 @@ export default function SceneCanvas({
           keys.clear();
           if (current.mode === "exterior") {
             const fit = Math.max(1, 1.65 / camera.aspect);
-            camera.position.set(cx + 22 * fit, 4 + 10 * fit, cz + 44 * fit);
+            camera.position.set(cx + 16 * fit, 4 + 4.5 * fit, cz + 40 * fit);
             controls!.target.set(cx, 4, cz);
             camera.fov = 43;
           } else if (current.mode === "overview") {
@@ -530,6 +588,7 @@ export default function SceneCanvas({
           holder.dataset.cameraPosition = camera.position.toArray().join(",");
         };
         const move = (action: SceneCommand, delta = 0.32) => {
+          drawFrames = 3;
           const current = state.current;
           if (action === "reset") {
             configure();
@@ -593,6 +652,7 @@ export default function SceneCanvas({
           }
         };
         const drag = (e: PointerEvent) => {
+          drawFrames = 3;
           if (pointer && state.current.mode === "walk") {
             yaw -= (e.clientX - pointer.x) * 0.004;
             pitch = THREE.MathUtils.clamp(
@@ -670,6 +730,8 @@ export default function SceneCanvas({
           const w = holder.clientWidth,
             h = holder.clientHeight;
           renderer.setSize(w, h);
+          drawFrames = 3;
+
           camera.aspect = w / h;
           camera.updateProjectionMatrix();
           if (state.current.mode !== "walk") configure();
@@ -703,7 +765,11 @@ export default function SceneCanvas({
               if (codes.some((k) => keys.has(k))) move(action, dt * 2.3);
             }
           } else controls!.update();
-          renderer!.render(scene!, camera);
+          if (drawFrames > 0) {
+            renderer!.render(scene!, camera);
+            drawFrames--;
+            renderer!.shadowMap.autoUpdate = false;
+          }
         }
         frame = requestAnimationFrame(animate);
         setStatus("ready");
@@ -737,8 +803,10 @@ export default function SceneCanvas({
                 fabricMat,
                 woodMat,
               ].includes(m)
-            )
+            ) {
+              if (m instanceof THREE.MeshStandardMaterial) m.map?.dispose();
               m.dispose();
+            }
           });
         }
       });

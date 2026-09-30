@@ -1,3 +1,4 @@
+import { batchMeshes } from "./batchMeshes";
 import * as THREE from "three";
 export type FacadeElement = {
   face: string;
@@ -18,14 +19,14 @@ export function createFacades(
 ) {
   const group = new THREE.Group();
   const glass = new THREE.MeshPhysicalMaterial({
-    color: 0xb8ccd2,
-    roughness: 0.13,
-    metalness: 0.15,
+    color: 0x8a9fa5,
+    roughness: 0.07,
+    metalness: 0.4,
     transparent: true,
-    opacity: 0.36,
+    opacity: 0.5,
     side: THREE.DoubleSide,
     depthWrite: false,
-    envMapIntensity: 1.2,
+    envMapIntensity: 1.8,
   });
   for (const e of elements.filter((e) => e.level === level)) {
     const alongX = e.face === "front" || e.face === "rear";
@@ -87,5 +88,5 @@ export function createFacades(
       add(0, e.bottom - 0.025, e.width + 0.06, 0.045, 0.38, frame);
     }
   }
-  return group;
+  return batchMeshes(group);
 }

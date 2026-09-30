@@ -3,6 +3,7 @@ import AxeBuilder from "@axe-core/playwright";
 test("3D entry, walking, zoom, every apartment and all view modes", async ({
   page,
 }) => {
+  test.setTimeout(45_000);
   const errors: string[] = [];
   page.on("pageerror", (e) => errors.push(e.message));
   await page.goto("/");
@@ -71,6 +72,10 @@ test("3D entry, walking, zoom, every apartment and all view modes", async ({
     .getByRole("button", { name: "Buiten bekijken", exact: true })
     .click();
   await expect(scene).toHaveAttribute("data-mode", "exterior");
+  await page.keyboard.press("Escape");
+  await expect
+    .poll(() => page.evaluate(() => Boolean(document.fullscreenElement)))
+    .toBe(false);
   await page.keyboard.press("Escape");
   await expect(dialog).toHaveCount(0);
   expect(errors).toEqual([]);

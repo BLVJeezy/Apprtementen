@@ -23,3 +23,10 @@ Continue realistic facade materials/lighting and validate visual quality on a re
 
 ## Verification
 Production build and Playwright suite should be rerun after any changes. Final results for this session are in STATE.md. Do not treat preliminary agent messages as completed changes.
+
+## Realism and streetscape update — 30 September
+Added licensed CC0 Poly Haven Kloppenheim 06 (Greg Zaal) HDR for photographic sky, environment lighting and window reflections; attribution/source is public/assets/environment/LICENSE.md. It is illustrative, not a site panorama. Brick uses source colour texture with shallow bump, glass has reflective physical material, ground has fine grass variation and trees use instanced leaves. Renderer draws on changes instead of continuously and reuses static shadow maps. An SSAO experiment was removed after it made interaction too slow; do not reintroduce without mobile performance profiling.
+
+src/three/SiteContext.ts adds the front asphalt road/markings, red cycle strip, paved sidewalk, low front hedges, central entrance path, right access drive, a left detached-house volume and right industrial-neighbour volume. Composition follows the user's aerial reference and was compared with the site-plan image. Dimensions/materials of neighbours, public-road widths and planting are approximate, not a surveyed reconstruction. Building geometry still needs specialist detail work for photorealistic parity. Original reference photos were not modified or published.
+
+Static facade, furniture and streetscape meshes are batched by material in src/three/batchMeshes.ts to reduce draw calls. Instanced foliage remains separate. An old agent-browser preview was consuming CPU during early performance checks and was closed; final tests use isolated Playwright browsers. Keep actual mobile GPU/frame-time profiling on the follow-up list; software-renderer test duration is not a phone frame-rate measurement.

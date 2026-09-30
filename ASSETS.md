@@ -16,3 +16,6 @@ All floor plans and four elevations are rendered directly from the drawings, inc
 5. Catch renderer/asset failures and WebGL context loss and show the existing image viewer. Offer an explicit plan option, respect reduced motion, lazy-load the renderer, avoid downloading all ten interiors at once. Test navigation and failure paths before enabling models.
 
 Current 3D controls operate on public/models/architecture.json, extracted from PDF vector polygons by scripts/extract-geometry.py (PyMuPDF and Shapely). The original 2D plan viewer remains available. Brick material comes from the source elevation via scripts/prepare-materials.py, with provenance in public/assets/materials/provenance.json. GLB remains a future replacement for the simplified model. Furniture and landscape in 3D are illustrative.
+
+## Environment lighting
+`public/assets/environment/kloppenheim_06_1k.hdr` is the original 1K HDR from Greg Zaal / Poly Haven, CC0, used locally for sky and reflections. Source and licence are recorded alongside it. It represents lighting context, not the actual site. Street/context meshes and procedural ground/paving textures are in `src/three/SiteContext.ts`; these are reference-based illustrative surroundings, not surveyed neighbour geometry.
