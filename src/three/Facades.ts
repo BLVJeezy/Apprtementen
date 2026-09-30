@@ -16,7 +16,6 @@ export function createFacades(
   level: number,
   brick: THREE.Material,
   frame: THREE.Material,
-  envMap: THREE.Texture | null = null,
 ) {
   const group = new THREE.Group();
   const glass = new THREE.MeshPhysicalMaterial({

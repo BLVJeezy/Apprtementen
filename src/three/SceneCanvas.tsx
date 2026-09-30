@@ -5,7 +5,6 @@ import { siteContext } from "./SiteContext";
 import { createFacades, type FacadeElement } from "./Facades";
 import { RGBELoader } from "three/addons/loaders/RGBELoader.js";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
-import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 import { mergeGeometries } from "three/addons/utils/BufferGeometryUtils.js";
 import type {
   Architecture,
@@ -28,7 +27,6 @@ const wallMat = new THREE.MeshStandardMaterial({
   color: 0xeee9de,
   roughness: 0.91,
 });
-// Slight buff tint pulls the source brick toward the supplied render's pale sand brick.
 const brickMat = new THREE.MeshStandardMaterial({
   color: 0xd1c6af,
   roughness: 0.96,
@@ -42,16 +40,9 @@ const floorMat = new THREE.MeshStandardMaterial({
   roughness: 0.85,
   side: THREE.DoubleSide,
 });
-// Anthracite powder-coated aluminium for frames, fascia and coping.
 const frameMat = new THREE.MeshStandardMaterial({
-  color: 0x2e3133,
-  roughness: 0.42,
-  metalness: 0.45,
-});
-// Charcoal bitumen/EPDM roof membrane, matched to the supplied render.
-const roofMat = new THREE.MeshStandardMaterial({
-  color: 0x4a4d50,
-  roughness: 0.96,
+  color: 0x303335,
+  roughness: 0.7,
 });
 const fabricMat = new THREE.MeshStandardMaterial({
   color: 0xe8e4d7,
@@ -149,60 +140,11 @@ function furnishings(floor: FloorGeometry) {
   }
   return batchMeshes(g);
 }
-function noiseTexture(
-  base: [number, number, number],
-  spread: number,
-  size = 256,
-  repeat = 1,
-) {
-  const canvas = document.createElement("canvas");
-  canvas.width = canvas.height = size;
-  const ctx = canvas.getContext("2d")!;
-  const img = ctx.createImageData(size, size);
-  let seed = 7;
-  const rand = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
-  for (let i = 0; i < size * size; i++) {
-    const n = (rand() - 0.5) * spread;
-    img.data.set(
-      [base[0] + n, base[1] + n * 1.1, base[2] + n * 0.8, 255],
-      i * 4,
-    );
-  }
-  ctx.putImageData(img, 0, 0);
-  const texture = new THREE.CanvasTexture(canvas);
-  texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-  texture.repeat.set(repeat, repeat);
-  texture.colorSpace = THREE.SRGBColorSpace;
-  return texture;
-}
 function landscape(scene: THREE.Scene, bounds: number[]) {
   const [x0, z0, x1, z1] = bounds;
-  const cx = (x0 + x1) / 2;
-  const flat = (
-    w: number,
-    d: number,
-    x: number,
-    y: number,
-    z: number,
-    mat: THREE.Material,
-  ) => {
-    const mesh = new THREE.Mesh(new THREE.PlaneGeometry(w, d), mat);
-    mesh.rotation.x = -Math.PI / 2;
-    mesh.position.set(x, y, z);
-    mesh.receiveShadow = true;
-    scene.add(mesh);
-    return mesh;
-  };
-  flat(
-    260,
-    260,
-    cx,
-    -0.2,
-    (z0 + z1) / 2,
-    new THREE.MeshStandardMaterial({
-      map: noiseTexture([112, 146, 80], 34, 256, 60),
-      roughness: 1,
-    }),
+  const ground = new THREE.Mesh(
+    new THREE.PlaneGeometry(260, 260),
+    new THREE.MeshStandardMaterial({ color: 0x8f9d74, roughness: 1 }),
   );
   const grassCanvas = document.createElement("canvas");
   grassCanvas.width = grassCanvas.height = 512;
@@ -235,11 +177,11 @@ function landscape(scene: THREE.Scene, bounds: number[]) {
   ground.receiveShadow = true;
   scene.add(ground);
   const green = new THREE.MeshStandardMaterial({
-    color: 0xffffff,
+    color: 0x697e52,
     roughness: 1,
   });
   const trunk = new THREE.MeshStandardMaterial({
-    color: 0x6f5e48,
+    color: 0x78664b,
     roughness: 1,
   });
   // Decorative landscape outside the model, not a proposed plot or garden allocation.
@@ -250,12 +192,11 @@ function landscape(scene: THREE.Scene, bounds: number[]) {
     const h = 3.1 + (i % 3) * 0.7;
     const tree = new THREE.Group();
     const stem = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.08 * spread, 0.14 * spread, h, 6),
+      new THREE.CylinderGeometry(0.12, 0.19, h, 6),
       trunk,
     );
     stem.position.y = h / 2;
-    stem.castShadow = shadow;
-    group.add(stem);
+    tree.add(stem);
     const crown = new THREE.InstancedMesh(
       new THREE.IcosahedronGeometry(0.13, 0),
       green,
@@ -276,32 +217,19 @@ function landscape(scene: THREE.Scene, bounds: number[]) {
       transform.rotation.set(random() * 3, angle, random() * 3);
       transform.updateMatrix();
       crown.setMatrixAt(k, transform.matrix);
-      // Brighter leaves near the top, shaded underneath.
       crown.setColorAt(
         k,
         new THREE.Color().setHSL(
-          hue + (k % 3) * 0.01,
-          0.4,
-          0.2 + (lift / spread + 1.3) * 0.05 + (k % 4) * 0.012,
-          THREE.SRGBColorSpace,
+          0.23 + (k % 5) * 0.008,
+          0.28,
+          0.25 + (k % 7) * 0.022,
         ),
       );
     }
-    crown.castShadow = shadow;
-    group.add(crown);
-    group.position.set(x, -0.2, z);
-    scene.add(group);
-  };
-  // Decorative landscape outside the model, not a proposed plot or garden allocation.
-  for (let i = 0; i < 22; i++) {
-    const side = i % 2 ? -1 : 1;
-    tree(
-      cx + side * (28 + (i % 4) * 3.5) + Math.sin(i * 3.1) * 1.5,
-      z0 - 18 + Math.floor(i / 2) * 5,
-      3.1 + (i % 3) * 0.7,
-      1 + (i % 4) * 0.12,
-      i,
-    );
+    crown.castShadow = true;
+    tree.add(crown);
+    tree.position.set(x, 0, z);
+    scene.add(tree);
   }
   siteContext(scene);
 }
@@ -580,13 +508,7 @@ export default function SceneCanvas({
             g.add(ceiling);
           }
           g.add(
-            createFacades(
-              facadeData.elements,
-              floor.level,
-              brickMat,
-              frameMat,
-              reflections,
-            ),
+            createFacades(facadeData.elements, floor.level, brickMat, frameMat),
           );
           g.add(furnishings(floor));
           floorGroups.push(g);
@@ -594,10 +516,8 @@ export default function SceneCanvas({
         }
         const roofGroup = new THREE.Group();
         const top = data.floors[2];
-        if (top.roofPolygons?.length) {
-          roofGroup.add(extrude(top.roofPolygons, 0.78, 8.0, frameMat));
-          roofGroup.add(extrude(top.roofPolygons, 0.02, 8.78, roofMat));
-        }
+        if (top.roofPolygons?.length)
+          roofGroup.add(extrude(top.roofPolygons, 0.8, 8.0, frameMat));
         scene.add(roofGroup);
         landscape(scene, bounds);
         const keys = new Set<string>();
